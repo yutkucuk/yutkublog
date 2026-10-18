@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>present day, present time...</title>
+    <style>
+        :root {
+            --bg-deep: #100c09;
+            --bg-panel: rgba(24, 19, 15, 0.96);
+            --bg-tab-inactive: #130f0c;
+            --bg-input: #14100d;
+            --border-dim: #382e25;
+            --text-main: #d4c5b0;
+            --text-muted: #8a7b68;
+            --amber-warm: #d8a657;
+            --lamp-opacity: 1;
+        }
+
+        body.dimmed {
+            --lamp-opacity: 0.22;
+            --text-main: #9e917f;
+            --amber-warm: #a67c38;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0; padding: 0;
+            line-height: 1.6;
+            background-image: radial-gradient(#261e17 1px, transparent 1px);
+            background-size: 24px 24px;
+            transition: color 0.4s ease, background-color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* 2700K Sarımtırak Masa Lambası Hüzmesi */
+        .ambient-lamp {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            opacity: var(--lamp-opacity);
+            transition: opacity 0.6s ease;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(224, 169, 82, 0.15) 0%, rgba(184, 123, 46, 0.05) 45%, transparent 75%),
+                radial-gradient(circle at 50% 50%, transparent 50%, rgba(6, 4, 3, 0.78) 100%);
+        }
+
+        .wrapper {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .sidebar-left {
+            position: fixed;
+            width: 200px;
+            left: calc(50% - 580px);
+            top: 80px;
+            text-align: right;
+            border-right: 1px solid var(--border-dim);
+            padding-right: 20px;
+            z-index: 10;
+        }
+
+        .sidebar-right {
+            position: fixed;
+            width: 200px;
+            right: calc(50% - 580px);
+            top: 80px;
+            border-left: 1px solid var(--border-dim);
+            padding-left: 20px;
+            z-index: 10;
+        }
+
+        .main-shell {
+            width: 660px;
+            margin: 0 auto;
+            padding-top: 35px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CHROME TABS TARZI ÜST SEKME ÇUBUĞU */
+        .chrome-tabs-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            padding: 0 14px;
+            border-bottom: 1px solid var(--border-dim);
+            position: relative;
+            z-index: 2;
+        }
+
+        .chrome-tab {
+            background: var(--bg-tab-inactive);
+            color: var(--text-muted);
+            border: 1px solid var(--border-dim);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 9px 20px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            position: relative;
+            top: 1px;
+            transition: background-color 0.25s ease, color 0.25s ease, padding 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chrome-tab:hover {
+            color: var(--text-main);
+            background: #1a1410;
+        }
+
+        .chrome-tab.active {
+            background: var(--bg-panel);
+            color: var(--amber-warm);
+            border-top: 2px solid var(--amber-warm);
+            padding-bottom: 10px;
+            z-index: 3;
+            box-shadow: 0 -4px 15px rgba(216, 166, 87, 0.08);
+        }
+
+        .tab-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--border-dim);
+            display: inline-block;
+        }
+        .chrome-tab.active .tab-dot {
+            background: var(--amber-warm);
+            box-shadow: 0 0 6px var(--amber-warm);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 45px 45px 90px 45px;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border-dim);
+            border-right: 1px solid var(--border-dim);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+        }
+
+        /* Sekme Geçiş Animasyonu */
+        .tab-pane-anim {
+            animation: tabFadeSlide 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes tabFadeSlide {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .side-btn, .comment-btn {
+            display: inline-block;
+            color: var(--amber-warm);
+            border: 1px solid var(--border-dim);
+            background: rgba(20, 16, 13, 0.75);
+            padding: 5px 10px;
+            text-decoration: none;
+            font-size: 11px;
+            font-family: inherit;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: 0.25s;
+        }
+        .side-btn:hover, .comment-btn:hover {
+            background: var(--amber-warm);
+            color: var(--bg-deep);
+        }
+
+        .leave-lain {
+            color: var(--amber-warm);
+            font-weight: bold;
+            font-size: 13px;
+            animation: glitch 4s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            2% { transform: translate(-1px, 1px); text-shadow: 1px 0 #b85d3b; }
+            4% { transform: translate(1px, -1px); text-shadow: -1px 0 #d8a657; }
+            6% { transform: translate(0); text-shadow: none; }
+        }
+
+        /* SİZDEN GELENLER: ÜSTTE TUTTURULMUŞ POP-UP POST MESAJI */
+        .pinned-popup-card {
+            background: linear-gradient(180deg, rgba(32, 24, 18, 0.95) 0%, rgba(18, 14, 11, 0.95) 100%);
+            border: 1px solid var(--amber-warm);
+            padding: 22px 24px;
+            margin-bottom: 45px;
+            position: relative;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(216, 166, 87, 0.07);
+        }
+        .pinned-badge {
+            display: inline-block;
+            font-size: 10.5px;
+            color: var(--bg-deep);
+            background: var(--amber-warm);
+            padding: 2px 8px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .pinned-title {
+            font-size: 17px;
+            color: var(--amber-warm);
+            margin: 0 0 10px 0;
+            font-weight: normal;
+        }
+        .pinned-body {
+            font-size: 13px;
+            color: var(--text-main);
+            white-space: pre-wrap;
+            margin-bottom: 18px;
+            line-height: 1.65;
+        }
+
+        /* DOSYA YÜKLEME ALANLARI (Ses ve Görsel) */
+        .upload-zone {
+            border: 1px dashed var(--border-dim);
+            background: #0e0b08;
+            padding: 11px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            transition: border-color 0.25s, background-color 0.25s;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--amber-warm);
+            background: rgba(216, 166, 87, 0.04);
+        }
+        .upload-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .upload-info.selected { color: var(--amber-warm); }
+        .clear-file-btn {
+            background: transparent;
+            border: 1px solid #5c3924;
+            color: #c97a4b;
+            font-family: inherit;
+            font-size: 10.5px;
+            padding: 3px 8px;
+            cursor: pointer;
+            display: none;
+            white-space: nowrap;
+        }
+        .clear-file-btn:hover { background: #c97a4b; color: var(--bg-deep); }
+
+        /* SES HIZI VE SES DÜZEYİ (0-200%) AYAR KUTUSU */
+        .audio-tuning-box {
+            background: #110d0a;
+            border: 1px solid var(--border-dim);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+        .tuning-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .tuning-row:last-child { margin-bottom: 0; }
+        .tuning-slider {
+            flex: 1;
+            accent-color: var(--amber-warm);
+            cursor: pointer;
+            height: 4px;
+        }
+        .tuning-val {
+            color: var(--amber-warm);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Yazı (Post) Tasarımı */
+        article.post {
+            margin-bottom: 65px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+        .post-meta-top {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            color: #9c5a44;
+            font-size: 10.5px;
+            cursor: pointer;
+            background: none;
+            border: 1px solid transparent;
+            font-family: inherit;
+            padding: 1px 6px;
+        }
+        .delete-btn:hover {
+            color: #e07a5f;
+            border-color: #5c3924;
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: normal;
+            margin: 0 0 18px 0;
+        }
+        .post-title a {
+            color: var(--amber-warm);
+            text-decoration: none;
+            border-bottom: 1px dashed transparent;
+            cursor: pointer;
+        }
+        .post-title a:hover {
+            border-bottom-color: var(--amber-warm);
+            text-shadow: 0 0 12px rgba(216, 166, 87, 0.25);
+        }
+        .post-body {
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* YAZININ EN ALTINDA ORTALANMIŞ GÖRSEL */
+        .post-image-bottom {
+            margin-top: 24px;
+            text-align: center;
+        }
+        .post-image-bottom img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 520px;
+            border: 1px solid var(--border-dim);
+            padding: 4px;
+            background: #0d0a08;
+            filter: sepia(0.12) contrast(0.98);
+        }
+
+        /* YAZI ÜSTÜ SESLENDİRME OYNATICISI (Hız ve 0-200% Ses Kontrollü) */
+        .voiceover-box {
+            background: #130f0c;
+            border: 1px solid var(--border-dim);
+            border-left: 3px solid var(--amber-warm);
+            padding: 10px 14px;
+            margin-bottom: 22px;
+            font-size: 11.5px;
+        }
+        .vo-main-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .vo-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #261f19;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .vo-ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 170px;
+        }
+        .vo-play-btn {
+            background: transparent;
+            border: 1px solid var(--border-dim);
+            color: var(--amber-warm);
+            font-family: inherit;
+            font-size: 11px;
+            padding: 4px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .vo-play-btn:hover {
+            background: var(--amber-warm);
+            color: var(--bg-deep);
+        }
+        .vo-progress-wrap {
+            flex: 1;
+            height: 6px;
+            background: #241d17;
+            border: 1px solid #382e25;
+            cursor: pointer;
+            position: relative;
+        }
+        .vo-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--amber-warm);
+            box-shadow: 0 0 8px rgba(216, 166, 87, 0.5);
+        }
+        .vo-time {
+            color: var(--text-muted);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* SPOTIFY GÖMÜLÜ OYNATICI */
+        .spotify-embed-box {
+            margin-top: 24px;
+            border: 1px solid var(--border-dim);
+            background: #0e0b08;
+            padding: 8px 10px 4px 10px;
+        }
+        .spotify-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .spotify-embed-box iframe {
+            border-radius: 4px;
+            filter: sepia(0.28) brightness(0.88) contrast(1.05);
+            transition: filter 0.3s ease;
+        }
+        .spotify-embed-box iframe:hover {
+            filter: sepia(0.1) brightness(0.95);
+        }
+
+        /* Duvar Notları ve Formlar */
+        .wall-footer-bar {
+            margin-top: 25px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--border-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        .wall-notes-preview {
+            margin-top: 14px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border-dim);
+        }
+        .wall-note-item {
+            background: rgba(18, 14, 11, 0.78);
+            border: 1px solid #2b231c;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            font-size: 12.5px;
+        }
+        .wall-note-meta {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .wall-note-author { color: var(--amber-warm); font-weight: bold; }
+        .wall-note-text { white-space: pre-wrap; word-break: break-word; }
+
+        .anon-form-box {
+            margin-top: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-dim);
+            padding: 18px;
+        }
+        .form-field-label {
+            font-size: 11px;
+            color: var(--amber-warm);
+            margin-bottom: 5px;
+            display: block;
+        }
+        .anon-input, .anon-textarea {
+            width: 100%;
+            background: #0e0b08;
+            border: 1px solid var(--border-dim);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 12.5px;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .anon-input:focus, .anon-textarea:focus { border-color: var(--amber-warm); }
+        .anon-textarea { min-height: 90px; resize: vertical; }
+        .anon-submit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .archive-list { list-style: none; padding: 0; margin: 10px 0; }
+        .archive-list li { margin-bottom: 8px; font-size: 12px; }
+        .archive-list a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+        .archive-list a:hover { color: var(--amber-warm); }
+
+        /* Gizli Admin Noktası */
+        .secret-admin-trigger {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #382e25;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .secret-admin-trigger:hover { color: var(--text-muted); }
+
+        @media (max-width: 1100px) {
+            .wrapper { flex-direction: column; }
+            .sidebar-left, .sidebar-right {
+                position: static; width: 100%; max-width: 660px; margin: 0 auto;
+                border: none; border-bottom: 1px solid var(--border-dim);
+                padding: 20px 25px; text-align: left;
+            }
+            .main-shell { width: 100%; max-width: 660px; padding-top: 15px; }
+            .main-content { padding: 30px 22px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-lamp"></div>
+
+    <!-- SOL MENÜ -->
+    <aside class="sidebar-left">
+        <div style="opacity: 0.75; margin-bottom: 20px; font-size: 12px; color: #8a7b68;">
+            and you don't seem to understand...<br>a shame, you seemed an honest man.
+        </div>
+        <button class="side-btn" onclick="switchTab('my_wall')">[ benim_duvarım ]</button><br>
+        <button class="side-btn" onclick="switchTab('community_wall')">[ sizden_gelenler ]</button><br>
+        <button class="side-btn" onclick="toggleLamp()">[ ışığı_kıs ]</button><br>
+
+        <!-- Sadece Admin Girişi Yapıldığında Görünen Kontroller -->
+        <div id="admin-sidebar-controls" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border-dim);">
+            <div style="font-size:10px; color:var(--amber-warm); margin-bottom:6px;">// admin_yetkisi_aktif</div>
+            <button class="side-btn" onclick="openPostCreator('my_wall')">[ + duvarıma_yazı_ekle ]</button><br>
+            <button class="side-btn" onclick="adminLogout()" style="color:#c97a4b;">[ admin_çıkış ]</button>
+        </div>
+
+        <!-- Gizli Admin Giriş Tetikleyicisi (Ctrl+Shift+L veya buraya tıklama) -->
+        <button class="secret-admin-trigger" onclick="promptAdminLogin()" title="terminal">[ · ]</button>
+    </aside>
+
+    <!-- ANA GÖVDE VE CHROME SEKMELERİ -->
+    <div class="wrapper">
+        <div class="main-shell">
+
+            <!-- ÜST CHROME SEKMELERİ (TABS) -->
+            <nav class="chrome-tabs-bar">
+                <button id="tab-btn-my_wall" class="chrome-tab active" onclick="switchTab('my_wall')">
+                    <span class="tab-dot"></span>
+                    <span>benim_duvarım</span>
+                </button>
+                <button id="tab-btn-community_wall" class="chrome-tab" onclick="switchTab('community_wall')">
+                    <span class="tab-dot"></span>
+                    <span>sizden_gelenler</span>
+                </button>
+            </nav>
+
+            <main class="main-content">
+
+                <!-- ORTAK YAZI OLUŞTURMA FORMU (Sırasıyla: Başlık -> Yazı -> Mahlas -> Seslendirme -> Görsel) -->
+                <section id="post-creator-box" class="anon-form-box" style="display:none; margin-bottom:45px; border-color:var(--amber-warm);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                        <span id="creator-box-title" style="font-size:12px; color:var(--amber-warm);">// yeni duvar yazısı yayınla</span>
+                        <button class="delete-btn" onclick="closePostCreator()">[ &#215; kapat ]</button>
+                    </div>
+
+                    <!-- 1. YAZI BAŞLIĞI -->
+                    <label class="form-field-label">1. yazı başlığı</label>
+                    <input id="post-title-in" class="anon-input" type="text" maxlength="120" placeholder="yazı başlığı...">
+
+                    <!-- 2. YAZI METNİ -->
+                    <label class="form-field-label">2. yazı</label>
+                    <textarea id="post-body-in" class="anon-textarea" style="min-height:140px;" placeholder="yazını buraya bırak..."></textarea>
+
+                    <!-- 3. MAHLAS -->
+                    <label class="form-field-label">3. mahlas</label>
+                    <input id="post-author-in" class="anon-input" type="text" maxlength="40" placeholder="mahlas veya isim (boş bırakırsan: bir yabancı)">
+
+                    <!-- 4. SESLENDİRME (.mp3 / .m4a / .wav) + HIZ VE SES DÜZEYİ (0-200%) -->
+                    <label class="form-field-label">4. seslendirme (isteğe bağlı - yazının en üstünde yer alır)</label>
+                    <input id="post-audio-file" type="file" accept=".mp3,.m4a,.wav,.ogg,.aac,audio/*" style="display:none;" onchange="handleAudioSelect(this.files[0])">
+                    <div id="audio-dropzone" class="upload-zone" 
+                         onclick="document.getElementById('post-audio-file').click()"
+                         ondragover="handleDragOver(event, 'audio-dropzone')"
+                         ondragleave="handleDragLeave(event, 'audio-dropzone')"
+                         ondrop="handleAudioDrop(event)">
+                        <span id="audio-file-label" class="upload-info">[ + ses dosyası seç veya sürükle (.mp3 / .m4a / .wav) ]</span>
+                        <button id="audio-clear-btn" class="clear-file-btn" type="button" onclick="clearAudioSelection(event)">[ &#215; kaldır ]</button>
+                    </div>
+
+                    <!-- Ses Hızı ve Ses Düzeyi (0% - 200%) Ayar Kutusu -->
+                    <div class="audio-tuning-box">
+                        <div class="tuning-row">
+                            <span>ses düzeyi (0% - 200%):</span>
+                            <input id="form-audio-gain" class="tuning-slider" type="range" min="0" max="200" value="100" oninput="updateFormAudioTuning()">
+                            <span id="form-gain-val" class="tuning-val">100%</span>
+                        </div>
+                        <div class="tuning-row">
+                            <span>ses hızı (50% - 200%):</span>
+                            <input id="form-audio-rate" class="tuning-slider" type="range" min="50" max="200" step="5" value="100" oninput="updateFormAudioTuning()">
+                            <span id="form-rate-val" class="tuning-val">100%</span>
+                        </div>
+                        <div id="form-audio-preview-wrap" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #2b231c;">
+                            <audio id="form-preview-audio" controls style="display:none;"></audio>
+                            <button class="comment-btn" type="button" onclick="toggleFormAudioPreview()" id="form-preview-btn">[ &#9654; seçilen_sesi_bu_ayarla_önizle ]</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. GÖRSEL EKLEME (Yazının En Altında Ortalanmış Durur) -->
+                    <label class="form-field-label">5. görsel (isteğe bağlı - yazının en altında ortalanmış durur)</label>
+                    <input id="post-image-file" type="file" accept="image/*" style="display:none;" onchange="handleImageSelect(this.files[0])">
+                    <div id="image-dropzone" class="upload-zone"
+                         onclick="document.getElementById('post-image-file').click()"
+                         ondragover="handleDragOver(event, 'image-dropzone')"
+                         ondragleave="handleDragLeave(event, 'image-dropzone')"
+                         ondrop="handleImageDrop(event)">
+                        <span id="image-file-label" class="upload-info">[ + fotoğraf / görsel seç veya sürükle (.jpg / .png / .webp) ]</span>
+                        <button id="image-clear-btn" class="clear-file-btn" type="button" onclick="clearImageSelection(event)">[ &#215; kaldır ]</button>
+                    </div>
+
+                    <!-- İsteğe Bağlı Spotify Linki -->
+                    <label class="form-field-label">spotify şarkı linki (isteğe bağlı)</label>
+                    <input id="post-spotify-in" class="anon-input" type="text" placeholder="https://open.spotify.com/track/...">
+
+                    <div class="anon-submit-row">
+                        <span id="publish-status-text">hazır olduğunda duvara asabilirsin.</span>
+                        <button id="publish-btn" class="comment-btn" onclick="publishPost()">[ duvara_as ]</button>
+                    </div>
+                </section>
+
+                <!-- ANA LİSTE GÖRÜNÜMÜ -->
+                <div id="home-view" class="tab-pane-anim">
+
+                    <!-- SADECE "SİZDEN GELENLER" SEKMESİNDE EN ÜSTTE DURAN TUTTURULMUŞ POP-UP POST -->
+                    <section id="community-pinned-card" class="pinned-popup-card" style="display:none;">
+                        <span class="pinned-badge">// sabitlenmiş_not : sizden gelenler duvarı</span>
+                        <h2 class="pinned-title">gece 03:15 ve sarı sokak lambaları</h2>
+                        <div class="pinned-body">bazen odanın içindeki tek ses bilgisayar fanının uğultusu ve dışarıdaki sarı sokak lambasının cama vuran yorgun ışığı oluyor.
+
+burası kimsenin kimseye hesap vermediği, profil fotoğraflarının ve üyelik ekranlarının kapının dışında bırakıldığı ortak duvarımız. uykunun tutmadığı bir saatte aklına takılan bir düşünceyi, kendi ses kaydını, bir fotoğrafı ya da yarım kalmış bir metni buraya bırakabilirsin.
+
+yazdığın bir yazıyı veya yorumu sadece sen silebilirsin; geri kalan herkes ise altında sessizce soluklanıp cevabını bırakabilir.</div>
+                        <button class="comment-btn" onclick="openPostCreator('community_wall')" style="font-size:12px; padding:6px 14px;">[ + bu duvara kendi yazını bırak ]</button>
+                    </section>
+
+                    <!-- YAZILARIN LİSTELENDİĞİ KONTEYNER -->
+                    <div id="posts-container"></div>
+                </div>
+
+                <!-- TEKİL YAZI SAYFASI GÖRÜNÜMÜ (Başlığa Tıklayınca Açılır) -->
+                <div id="single-post-view" style="display:none;">
+                    <button class="side-btn" onclick="goHome()" style="margin-bottom:25px;">&#8592; duvara geri dön</button>
+                    <div id="single-post-content"></div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- SAĞ MENÜ (ARŞİV) -->
+        <aside class="sidebar-right">
+            <div style="font-size:11px; color:#8a7b68; margin-bottom:16px;">present day,<br>present time...</div>
+            <div class="leave-lain">lets all leave lain</div>
+            <div style="margin-top:35px;">
+                <div id="archive-title-label" style="font-size:11px; color:var(--amber-warm); border-bottom:1px dashed var(--border-dim); padding-bottom:4px;">// kayıt_arşivi</div>
+                <ul class="archive-list" id="archive-sidebar-list"></ul>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        /* =========================================================================
+           AYARLAR VE GİZLİ ADMİN ŞİFRESİ:
+           Admin panelini açmak için sol alttaki [ · ] noktasına tıkla veya 
+           klavyeden Ctrl + Shift + L tuşlarına bas.
+        ========================================================================= */
+        const ADMIN_PASSWORD = "lain"; 
+        let activeTab = "my_wall"; // 'my_wall' veya 'community_wall'
+        let creatorTargetWall = "my_wall";
+
+        let selectedAudioFile = null;
+        let selectedImageFile = null;
+        let mediaBlobUrlCache = {};
+
+        // Web Audio API (Ses Düzeyini %0 - %200 Arası Gerçekten Yükseltebilmek İçin)
+        let audioCtx = null;
+        const connectedGainNodes = {};
+
+        // Her Ziyaretçiye Özel Silme Anahtarı (Sadece kendi yazdığını silebilmesi için)
+        function getVisitorToken() {
+            let tok = localStorage.getItem("wall_visitor_token");
+            if (!tok) {
+                tok = "v_" + Math.random().toString(36).substring(2) + "_" + Date.now();
+                localStorage.setItem("wall_visitor_token", tok);
+            }
+            return tok;
+        }
+        const CURRENT_VISITOR = getVisitorToken();
+
+        function isAdmin() {
+            return sessionStorage.getItem("wall_admin_auth") === "1";
+        }
+
+        function promptAdminLogin() {
+            if (isAdmin()) {
+                alert("Admin yetkisi zaten aktif.");
+                return;
+            }
+            const pass = prompt("wired_terminal // admin şifresi:");
+            if (pass === ADMIN_PASSWORD) {
+                sessionStorage.setItem("wall_admin_auth", "1");
+                updateAdminUI();
+                renderAll();
+            } else if (pass !== null) {
+                alert("erişim reddedildi.");
+            }
+        }
+
+        function adminLogout() {
+            sessionStorage.removeItem("wall_admin_auth");
+            closePostCreator();
+            updateAdminUI();
+            renderAll();
+        }
+
+        function updateAdminUI() {
+            const ctrl = document.getElementById("admin-sidebar-controls");
+            if (ctrl) ctrl.style.display = isAdmin() ? "block" : "none";
+        }
+
+        // Klavye Kısayolu: Ctrl + Shift + L ile Gizli Admin Girişi
+        document.addEventListener("keydown", e => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "l") {
+                e.preventDefault();
+                promptAdminLogin();
+            }
+        });
+
+        // Başlangıç Örnek Yazıları
+        const DEFAULT_MY_POSTS = [
+            {
+                id: "my_1",
+                wall: "my_wall",
+                title: "kasetin b yüzü ve kehribar ışığı",
+                author: "yutku",
+                date: "18 ekim, gece 03:15",
+                audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                audioGain: 100,
+                audioRate: 100,
+                imageUrl: "",
+                body: "odanın içindeki sarımtırak ışık sıcaklığı 2700 kelvin civarında sabitlendiğinde zaman algısı da yavaşlıyor.\n\nburası benim kendi yazılarımı, ses kayıtlarımı ve gece notlarımı bıraktığım ana duvar. başlıklara tıklayıp yazıların altına kendi cevabını bırakabilirsin; kendi bağımsız yazını paylaşmak istersen üstteki 'sizden_gelenler' sekmesine geçebilirsin.",
+                spotifyUrl: "https://open.spotify.com/track/5fdNHVZHbWB1AaXk4RBGVD",
+                ownerToken: "admin_only"
+            }
+        ];
+
+        const DEFAULT_COMMUNITY_POSTS = [
+            {
+                id: "comm_1",
+                wall: "community_wall",
+                title: "pazar gecesi uykusuzluğu",
+                author: "bir yabancı",
+                date: "18 ekim, gece 04:02",
+                audioUrl: "",
+                audioGain: 100,
+                audioRate: 100,
+                imageUrl: "",
+                body: "pazartesi sabahına birkaç saat kala hala uyanık olan var mı bilmiyorum ama bu duvarın rengi bile insanı biraz sakinleştiriyor.",
+                spotifyUrl: "",
+                ownerToken: "sample_visitor"
+            }
+        ];
+
+        /* =========================================================================
+           INDEXED-DB: Ses (.mp3/.m4a/.wav) ve Görsel Dosyalarını Saklama
+        ========================================================================= */
+        function openMediaDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open("WallMediaStorageDB_v2", 1);
+                req.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains("files")) {
+                        db.createObjectStore("files");
+                    }
+                };
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function saveFileToIndexedDB(key, blob) {
+            const db = await openMediaDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction("files", "readwrite");
+                tx.objectStore("files").put(blob, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function getFileUrlFromIndexedDB(key) {
+            if (mediaBlobUrlCache[key]) return mediaBlobUrlCache[key];
+            try {
+                const db = await openMediaDB();
+                return await new Promise(resolve => {
+                    const tx = db.transaction("files", "readonly");
+                    const req = tx.objectStore("files").get(key);
+                    req.onsuccess = () => {
+                        if (req.result) {
+                            const url = URL.createObjectURL(req.result);
+                            mediaBlobUrlCache[key] = url;
+                            resolve(url);
+                        } else resolve(null);
+                    };
+                    req.onerror = () => resolve(null);
+                });
+            } catch (e) {
+                return null;
+            }
+        }
+
+        /* =========================================================================
+           WEB AUDIO API: 0% - 200% SES DÜZEYİ (GAIN BOOST) VE HIZ KONTROLÜ
+        ========================================================================= */
+        function ensureWebAudioGain(audioEl) {
+            if (!audioEl || !audioEl.id) return null;
+            if (connectedGainNodes[audioEl.id]) return connectedGainNodes[audioEl.id];
+
+            try {
+                if (!audioCtx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContextClass();
+                }
+                const source = audioCtx.createMediaElementSource(audioEl);
+                const gainNode = audioCtx.createGain();
+                source.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                connectedGainNodes[audioEl.id] = gainNode;
+                return gainNode;
+            } catch (e) {
+                // Harici CORS kısıtlı örnek linklerde standart volume fallback'i
+                return null;
+            }
+        }
+
+        function applyAudioGainAndRate(audioEl, gainPercent, ratePercent) {
+            if (!audioEl) return;
+            const gPct = Number(gainPercent ?? 100);
+            const rPct = Number(ratePercent ?? 100);
+
+            audioEl.playbackRate = Math.max(0.25, Math.min(2.0, rPct / 100));
+
+            const gainNode = ensureWebAudioGain(audioEl);
+            if (gainNode) {
+                if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+                gainNode.gain.value = Math.max(0, Math.min(2.0, gPct / 100));
+                audioEl.volume = 1.0;
+            } else {
+                audioEl.volume = Math.max(0, Math.min(1.0, gPct / 100));
+            }
+        }
+
+        /* =========================================================================
+           FORM İÇİ SES VE GÖRSEL SEÇME / ÖNİZLEME
+        ========================================================================= */
+        function handleAudioSelect(file) {
+            if (!file) return;
+            const validExts = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.flac'];
+            const lower = file.name.toLowerCase();
+            if (!validExts.some(ext => lower.endsWith(ext)) && !file.type.startsWith('audio/')) {
+                alert("Lütfen geçerli bir ses dosyası seç (.mp3, .m4a, .wav, .ogg)");
+                return;
+            }
+            selectedAudioFile = file;
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const label = document.getElementById('audio-file-label');
+            label.textContent = `seçilen ses: ${file.name} (${sizeMB} MB)`;
+            label.classList.add('selected');
+            document.getElementById('audio-clear-btn').style.display = 'inline-block';
+
+            // Önizleme oynatıcısını hazırla
+            const prevWrap = document.getElementById('form-audio-preview-wrap');
+            const prevAudio = document.getElementById('form-preview-audio');
+            prevAudio.src = URL.createObjectURL(file);
+            prevWrap.style.display = 'block';
+            updateFormAudioTuning();
+        }
+
+        function clearAudioSelection(e) {
+            if (e) e.stopPropagation();
+            selectedAudioFile = null;
+            document.getElementById('post-audio-file').value = "";
+            const label = document.getElementById('audio-file-label');
+            label.textContent = "[ + ses dosyası seç veya sürükle (.mp3 / .m4a / .wav) ]";
+            label.classList.remove('selected');
+            document.getElementById('audio-clear-btn').style.display = 'none';
+
+            const prevAudio = document.getElementById('form-preview-audio');
+            prevAudio.pause();
+            prevAudio.src = "";
+            document.getElementById('form-audio-preview-wrap').style.display = 'none';
+        }
+
+        function updateFormAudioTuning() {
+            const gainVal = document.getElementById('form-audio-gain').value;
+            const rateVal = document.getElementById('form-audio-rate').value;
+            document.getElementById('form-gain-val').textContent = gainVal + "%";
+            document.getElementById('form-rate-val').textContent = rateVal + "%";
+
+            const prevAudio = document.getElementById('form-preview-audio');
+            if (prevAudio && prevAudio.src) {
+                applyAudioGainAndRate(prevAudio, gainVal, rateVal);
+            }
+        }
+
+        function toggleFormAudioPreview() {
+            const prevAudio = document.getElementById('form-preview-audio');
+            const btn = document.getElementById('form-preview-btn');
+            if (!prevAudio || !prevAudio.src) return;
+            updateFormAudioTuning();
+            if (prevAudio.paused) {
+                prevAudio.play();
+                btn.innerHTML = "[ &#10074;&#10074; önizlemeyi_duraklat ]";
+            } else {
+                prevAudio.pause();
+                btn.innerHTML = "[ &#9654; seçilen_sesi_bu_ayarla_önizle ]";
+            }
+        }
+
+        function handleImageSelect(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert("Lütfen geçerli bir görsel dosyası seç (.jpg, .png, .webp, .gif)");
+                return;
+            }
+            selectedImageFile = file;
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const label = document.getElementById('image-file-label');
+            label.textContent = `seçilen görsel: ${file.name} (${sizeMB} MB)`;
+            label.classList.add('selected');
+            document.getElementById('image-clear-btn').style.display = 'inline-block';
+        }
+
+        function clearImageSelection(e) {
+            if (e) e.stopPropagation();
+            selectedImageFile = null;
+            document.getElementById('post-image-file').value = "";
+            const label = document.getElementById('image-file-label');
+            label.textContent = "[ + fotoğraf / görsel seç veya sürükle (.jpg / .png / .webp) ]";
+            label.classList.remove('selected');
+            document.getElementById('image-clear-btn').style.display = 'none';
+        }
+
+        function handleDragOver(e, zoneId) {
+            e.preventDefault();
+            document.getElementById(zoneId).classList.add('dragover');
+        }
+        function handleDragLeave(e, zoneId) {
+            e.preventDefault();
+            document.getElementById(zoneId).classList.remove('dragover');
+        }
+        function handleAudioDrop(e) {
+            e.preventDefault();
+            document.getElementById('audio-dropzone').classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) handleAudioSelect(e.dataTransfer.files[0]);
+        }
+        function handleImageDrop(e) {
+            e.preventDefault();
+            document.getElementById('image-dropzone').classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) handleImageSelect(e.dataTransfer.files[0]);
+        }
+
+        /* =========================================================================
+           SEKME (CHROME TABS) GEÇİŞİ VE FORM AÇMA KONTROLLERİ
+        ========================================================================= */
+        function switchTab(tabName) {
+            activeTab = tabName;
+            document.getElementById('tab-btn-my_wall').classList.toggle('active', tabName === 'my_wall');
+            document.getElementById('tab-btn-community_wall').classList.toggle('active', tabName === 'community_wall');
+
+            closePostCreator();
+            document.getElementById('single-post-view').style.display = 'none';
+
+            const homeView = document.getElementById('home-view');
+            homeView.style.display = 'block';
+            homeView.classList.remove('tab-pane-anim');
+            void homeView.offsetWidth; // Animasyonu yeniden tetikle
+            homeView.classList.add('tab-pane-anim');
+
+            document.getElementById('community-pinned-card').style.display = (tabName === 'community_wall') ? 'block' : 'none';
+            renderAll();
+        }
+
+        function openPostCreator(targetWall) {
+            if (targetWall === 'my_wall' && !isAdmin()) {
+                alert("Ana duvarda sadece site sahibi yazı paylaşabilir. Sizden Gelenler sekmesini kullanabilirsin.");
+                return;
+            }
+            creatorTargetWall = targetWall;
+            const box = document.getElementById('post-creator-box');
+            const titleEl = document.getElementById('creator-box-title');
+            titleEl.textContent = targetWall === 'my_wall' 
+                ? "// benim_duvarım : yeni yazı yayınla (admin)" 
+                : "// sizden_gelenler : duvara kendi yazını bırak";
+            box.style.display = 'block';
+            box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closePostCreator() {
+            document.getElementById('post-creator-box').style.display = 'none';
+            const prevAudio = document.getElementById('form-preview-audio');
+            if (prevAudio) prevAudio.pause();
+        }
+
+        function toggleLamp() {
+            document.body.classList.toggle('dimmed');
+        }
+
+        function toggleInlineForm(id) {
+            const box = document.getElementById('form-box-' + id);
+            if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function escapeHtml(str) {
+            return String(str || "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        }
+
+        /* =========================================================================
+           MEDYA VE OYNATICI RENDER FONKSİYONLARI
+        ========================================================================= */
+        function renderSpotifyEmbed(url) {
+            if (!url || !url.trim()) return "";
+            const match = url.match(/track\/([a-zA-Z0-9]+)/);
+            if (!match || !match[1]) return "";
+            return `
+                <div class="spotify-embed-box">
+                    <div class="spotify-label">// bu yazının fon müziği :</div>
+                    <iframe src="https://open.spotify.com/embed/track/${match[1]}?utm_source=generator&theme=0" 
+                        width="100%" height="80" frameBorder="0" 
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+                    </iframe>
+                </div>
+            `;
+        }
+
+        function renderBottomImage(imageRef) {
+            if (!imageRef || !imageRef.trim()) return "";
+            const initialSrc = imageRef.startsWith("idb://") ? "" : escapeHtml(imageRef);
+            return `
+                <div class="post-image-bottom">
+                    <img data-media-ref="${escapeHtml(imageRef)}" src="${initialSrc}" alt="duvar görseli" loading="lazy">
+                </div>
+            `;
+        }
+
+        function renderVoiceoverPlayer(audioRef, uniqueKey, savedGain = 100, savedRate = 100) {
+            if (!audioRef || !audioRef.trim()) return "";
+            const aid = "audio_" + uniqueKey;
+            const initialSrc = audioRef.startsWith("idb://") ? "" : escapeHtml(audioRef);
+            return `
+                <div class="voiceover-box">
+                    <audio id="${aid}" data-media-ref="${escapeHtml(audioRef)}" 
+                        data-init-gain="${savedGain}" data-init-rate="${savedRate}"
+                        src="${initialSrc}" preload="metadata" 
+                        ontimeupdate="updateVoProgress('${aid}')" 
+                        onloadedmetadata="initVoPlayer('${aid}')"
+                        onended="resetVoBtn('${aid}')"></audio>
+                    <div class="vo-main-row">
+                        <button class="vo-play-btn" id="btn_${aid}" onclick="toggleVoPlay('${aid}')">[ &#9654; seslendirmeyi_dinle ]</button>
+                        <div class="vo-progress-wrap" onclick="seekVo('${aid}', event)">
+                            <div class="vo-progress-bar" id="bar_${aid}"></div>
+                        </div>
+                        <span class="vo-time" id="time_${aid}">00:00 / 00:00</span>
+                    </div>
+                    <div class="vo-controls-row">
+                        <div class="vo-ctrl-group">
+                            <span>ses:</span>
+                            <input type="range" class="tuning-slider" min="0" max="200" value="${savedGain}" 
+                                oninput="changePlayerGain('${aid}', this.value)">
+                            <span id="gain_lbl_${aid}" style="color:var(--amber-warm); min-width:36px;">${savedGain}%</span>
+                        </div>
+                        <div class="vo-ctrl-group">
+                            <span>hız:</span>
+                            <input type="range" class="tuning-slider" min="50" max="200" step="5" value="${savedRate}" 
+                                oninput="changePlayerRate('${aid}', this.value)">
+                            <span id="rate_lbl_${aid}" style="color:var(--amber-warm); min-width:36px;">${savedRate}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initVoPlayer(aid) {
+            updateVoProgress(aid);
+            const audio = document.getElementById(aid);
+            if (!audio) return;
+            const g = Number(audio.getAttribute('data-init-gain') || 100);
+            const r = Number(audio.getAttribute('data-init-rate') || 100);
+            audio.playbackRate = Math.max(0.25, Math.min(2.0, r / 100));
+            if (g <= 100) audio.volume = g / 100;
+        }
+
+        function changePlayerGain(aid, val) {
+            document.getElementById('gain_lbl_' + aid).textContent = val + "%";
+            const audio = document.getElementById(aid);
+            if (!audio) return;
+            audio.setAttribute('data-init-gain', val);
+            const r = Number(audio.getAttribute('data-init-rate') || 100);
+            applyAudioGainAndRate(audio, val, r);
+        }
+
+        function changePlayerRate(aid, val) {
+            document.getElementById('rate_lbl_' + aid).textContent = val + "%";
+            const audio = document.getElementById(aid);
+            if (!audio) return;
+            audio.setAttribute('data-init-rate', val);
+            const g = Number(audio.getAttribute('data-init-gain') || 100);
+            applyAudioGainAndRate(audio, g, val);
+        }
+
+        async function hydrateLocalMediaElements() {
+            const elements = document.querySelectorAll('[data-media-ref]');
+            for (const el of elements) {
+                const ref = el.getAttribute('data-media-ref');
+                if (ref && ref.startsWith("idb://") && !el.getAttribute('src')) {
+                    const key = ref.replace("idb://", "");
+                    const blobUrl = await getFileUrlFromIndexedDB(key);
+                    if (blobUrl) el.src = blobUrl;
+                }
+            }
+        }
+
+        function formatSec(s) {
+            if (!s || isNaN(s)) return "00:00";
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return String(m).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
+        }
+
+        function toggleVoPlay(aid) {
+            const audio = document.getElementById(aid);
+            const btn = document.getElementById("btn_" + aid);
+            if (!audio) return;
+
+            const g = Number(audio.getAttribute('data-init-gain') || 100);
+            const r = Number(audio.getAttribute('data-init-rate') || 100);
+            applyAudioGainAndRate(audio, g, r);
+
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(a => {
+                    if (a.id !== aid) { a.pause(); resetVoBtn(a.id); }
+                });
+                audio.play();
+                btn.innerHTML = "[ &#10074;&#10074; duraklat ]";
+            } else {
+                audio.pause();
+                btn.innerHTML = "[ &#9654; seslendirmeyi_dinle ]";
+            }
+        }
+
+        function resetVoBtn(aid) {
+            const btn = document.getElementById("btn_" + aid);
+            if (btn) btn.innerHTML = "[ &#9654; seslendirmeyi_dinle ]";
+        }
+
+        function updateVoProgress(aid) {
+            const audio = document.getElementById(aid);
+            const bar = document.getElementById("bar_" + aid);
+            const timeEl = document.getElementById("time_" + aid);
+            if (!audio || !bar || !timeEl) return;
+            const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+            bar.style.width = pct + "%";
+            timeEl.textContent = formatSec(audio.currentTime) + " / " + formatSec(audio.duration);
+        }
+
+        function seekVo(aid, e) {
+            const audio = document.getElementById(aid);
+            if (!audio || !audio.duration) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        }
+
+        /* =========================================================================
+           VERİTABANI İŞLEMLERİ: YAZILAR, SİLME YETKİSİ VE YORUMLAR
+        ========================================================================= */
+        function formatDepressiveTime(ts) {
+            const d = new Date(ts);
+            const aylar = ["ocak","şubat","mart","nisan","mayıs","haziran","temmuz","ağustos","eylül","ekim","kasım","aralık"];
+            const sa = String(d.getHours()).padStart(2, '0');
+            const dk = String(d.getMinutes()).padStart(2, '0');
+            const h = d.getHours();
+            let vakit = "gece";
+            if (h >= 5 && h < 12) vakit = "sabah";
+            else if (h >= 12 && h < 18) vakit = "öğleden sonra";
+            else if (h >= 18 && h < 23) vakit = "akşam";
+            return `${d.getDate()} ${aylar[d.getMonth()]}, ${vakit} ${sa}:${dk}`;
+        }
+
+        function getWallPosts(wallName) {
+            const storageKey = wallName === 'my_wall' ? "wall_my_posts_v2" : "wall_comm_posts_v2";
+            const saved = localStorage.getItem(storageKey);
+            if (!saved) {
+                const def = wallName === 'my_wall' ? DEFAULT_MY_POSTS : DEFAULT_COMMUNITY_POSTS;
+                localStorage.setItem(storageKey, JSON.stringify(def));
+                return def;
+            }
+            return JSON.parse(saved);
+        }
+
+        function saveWallPosts(wallName, posts) {
+            const storageKey = wallName === 'my_wall' ? "wall_my_posts_v2" : "wall_comm_posts_v2";
+            localStorage.setItem(storageKey, JSON.stringify(posts));
+        }
+
+        function canDeleteItem(ownerToken) {
+            if (isAdmin()) return true;
+            return ownerToken && ownerToken === CURRENT_VISITOR;
+        }
+
+        async function publishPost() {
+            if (creatorTargetWall === 'my_wall' && !isAdmin()) {
+                return alert("Yetkisiz işlem.");
+            }
+
+            const title = document.getElementById('post-title-in').value.trim();
+            const body = document.getElementById('post-body-in').value.trim();
+            const rawAuthor = document.getElementById('post-author-in').value.trim();
+            const spotifyUrl = document.getElementById('post-spotify-in').value.trim();
+            const audioGain = Number(document.getElementById('form-audio-gain').value || 100);
+            const audioRate = Number(document.getElementById('form-audio-rate').value || 100);
+
+            if (!title || !body) return alert("Başlık ve yazı alanı boş bırakılamaz.");
+
+            const pubBtn = document.getElementById('publish-btn');
+            const statusText = document.getElementById('publish-status-text');
+            pubBtn.disabled = true;
+            statusText.textContent = "dosyalar işleniyor...";
+
+            let finalAudioUrl = "";
+            let finalImageUrl = "";
+
+            if (selectedAudioFile) {
+                const audioKey = "vo_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6);
+                await saveFileToIndexedDB(audioKey, selectedAudioFile);
+                finalAudioUrl = "idb://" + audioKey;
+            }
+
+            if (selectedImageFile) {
+                const imgKey = "img_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6);
+                await saveFileToIndexedDB(imgKey, selectedImageFile);
+                finalImageUrl = "idb://" + imgKey;
+            }
+
+            const posts = getWallPosts(creatorTargetWall);
+            const newPost = {
+                id: "post_" + Date.now(),
+                wall: creatorTargetWall,
+                title,
+                author: rawAuthor || (creatorTargetWall === 'my_wall' ? "yutku" : "bir yabancı"),
+                date: formatDepressiveTime(Date.now()),
+                audioUrl: finalAudioUrl,
+                audioGain,
+                audioRate,
+                imageUrl: finalImageUrl,
+                body,
+                spotifyUrl,
+                ownerToken: CURRENT_VISITOR
+            };
+
+            posts.unshift(newPost);
+            saveWallPosts(creatorTargetWall, posts);
+
+            // Formu Temizle
+            document.getElementById('post-title-in').value = "";
+            document.getElementById('post-body-in').value = "";
+            document.getElementById('post-author-in').value = "";
+            document.getElementById('post-spotify-in').value = "";
+            document.getElementById('form-audio-gain').value = 100;
+            document.getElementById('form-audio-rate').value = 100;
+            updateFormAudioTuning();
+            clearAudioSelection();
+            clearImageSelection();
+
+            statusText.textContent = "hazır olduğunda duvara asabilirsin.";
+            pubBtn.disabled = false;
+            closePostCreator();
+            switchTab(creatorTargetWall);
+        }
+
+        function deletePost(wallName, postId) {
+            const posts = getWallPosts(wallName);
+            const target = posts.find(p => p.id === postId);
+            if (!target) return;
+
+            if (!canDeleteItem(target.ownerToken)) {
+                alert("Bu yazıyı sadece yazan kişi veya admin silebilir.");
+                return;
+            }
+            if (!confirm("Bu yazıyı duvardan kaldırmak istediğine emin misin?")) return;
+
+            const updated = posts.filter(p => p.id !== postId);
+            saveWallPosts(wallName, updated);
+            goHome();
+        }
+
+        function renderAll() {
+            const posts = getWallPosts(activeTab);
+            const container = document.getElementById('posts-container');
+            const archiveList = document.getElementById('archive-sidebar-list');
+            const archiveTitle = document.getElementById('archive-title-label');
+
+            archiveTitle.textContent = activeTab === 'my_wall' ? "// benim_duvarım_arşivi" : "// sizden_gelenler_arşivi";
+
+            archiveList.innerHTML = posts.map(p => `
+                <li><a onclick="openPostPage('${p.wall}', '${p.id}')">&#9656; ${escapeHtml(p.title)}</a></li>
+            `).join('');
+
+            if (posts.length === 0) {
+                container.innerHTML = `<div style="font-size:12px; color:var(--text-muted);">bu duvarda henüz kayıt yok.</div>`;
+                return;
+            }
+
+            container.innerHTML = posts.map(p => {
+                const showDel = canDeleteItem(p.ownerToken);
+                return `
+                <article class="post">
+                    <div class="post-meta-top">
+                        <span>// ${escapeHtml(p.author)} &#8212; ${escapeHtml(p.date)}</span>
+                        ${showDel ? `<button class="delete-btn" onclick="deletePost('${p.wall}', '${p.id}')">[ ${isAdmin() ? 'admin_sil' : 'yazımı_sil'} ]</button>` : ''}
+                    </div>
+                    <h2 class="post-title"><a onclick="openPostPage('${p.wall}', '${p.id}')">${escapeHtml(p.title)}</a></h2>
+                    ${renderVoiceoverPlayer(p.audioUrl, "home_" + p.id, p.audioGain, p.audioRate)}
+                    <div class="post-body">${escapeHtml(p.body)}</div>
+                    ${renderBottomImage(p.imageUrl)}
+                    ${renderSpotifyEmbed(p.spotifyUrl)}
+
+                    <div class="wall-footer-bar">
+                        <span class="comment-count" id="count-${p.id}" style="color:var(--text-muted); font-size:11px;">henüz ses yok</span>
+                        <div style="display:flex; gap:8px;">
+                            <button class="comment-btn" onclick="toggleInlineForm('${p.id}')">[ cevap_yaz ]</button>
+                            <button class="comment-btn" onclick="openPostPage('${p.wall}', '${p.id}')">[ tüm_cevapları_gör &#8594; ]</button>
+                        </div>
+                    </div>
+
+                    <div class="wall-notes-preview" id="notes-list-${p.id}"></div>
+
+                    <div class="anon-form-box" id="form-box-${p.id}" style="display:none;">
+                        <input class="anon-input" id="name-${p.id}" maxlength="35" placeholder="mahlas / isim (boş bırakırsan: bir yabancı)">
+                        <textarea class="anon-textarea" id="text-${p.id}" maxlength="1500" placeholder="bu yazıya anonim bir cevap bırak..."></textarea>
+                        <div class="anon-submit-row">
+                            <span>giriş yapmadan doğrudan yayınlanır.</span>
+                            <button class="comment-btn" onclick="submitComment('${p.id}', true)">[ gönder ]</button>
+                        </div>
+                    </div>
+                </article>
+                `;
+            }).join('');
+
+            posts.forEach(p => loadComments(p.id, true));
+            hydrateLocalMediaElements();
+        }
+
+        function openPostPage(wallName, postId) {
+            const posts = getWallPosts(wallName);
+            const p = posts.find(x => x.id === postId);
+            if (!p) return;
+
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('single-post-view').style.display = 'block';
+            window.scrollTo(0, 0);
+
+            const showDel = canDeleteItem(p.ownerToken);
+
+            document.getElementById('single-post-content').innerHTML = `
+                <article class="post" style="border-bottom:none;">
+                    <div class="post-meta-top">
+                        <span>// ${escapeHtml(p.author)} &#8212; ${escapeHtml(p.date)}</span>
+                        ${showDel ? `<button class="delete-btn" onclick="deletePost('${p.wall}', '${p.id}')">[ ${isAdmin() ? 'admin_sil' : 'yazımı_sil'} ]</button>` : ''}
+                    </div>
+                    <h1 class="post-title" style="color:var(--amber-warm);">${escapeHtml(p.title)}</h1>
+                    ${renderVoiceoverPlayer(p.audioUrl, "single_" + p.id, p.audioGain, p.audioRate)}
+                    <div class="post-body">${escapeHtml(p.body)}</div>
+                    ${renderBottomImage(p.imageUrl)}
+                    ${renderSpotifyEmbed(p.spotifyUrl)}
+
+                    <div class="wall-footer-bar" style="margin-top:40px;">
+                        <span style="color:var(--amber-warm); font-size:12px;">// bu yazının altına bırakılan cevaplar</span>
+                        <span id="count-single-${p.id}" style="color:var(--text-muted); font-size:11px;">...</span>
+                    </div>
+
+                    <div class="anon-form-box" style="margin-bottom:25px;">
+                        <input class="anon-input" id="name-single-${p.id}" maxlength="35" placeholder="mahlasın (boş bırakırsan: bir yabancı)">
+                        <textarea class="anon-textarea" id="text-single-${p.id}" maxlength="2000" placeholder="düşünceni, cevabını veya içinden geçeni yaz..."></textarea>
+                        <div class="anon-submit-row">
+                            <span>hesap gerekmez. sadece sen (veya admin) silebilirsin.</span>
+                            <button class="comment-btn" onclick="submitComment('${p.id}', false)">[ duvara_bırak ]</button>
+                        </div>
+                    </div>
+
+                    <div id="notes-list-single-${p.id}"></div>
+                </article>
+            `;
+            loadComments(p.id, false);
+            hydrateLocalMediaElements();
+        }
+
+        function goHome() {
+            document.getElementById('single-post-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+            renderAll();
+        }
+
+        function loadComments(postId, isHomeView) {
+            const notes = JSON.parse(localStorage.getItem("wall_comments_" + postId) || "[]");
+            const listEl = document.getElementById((!isHomeView ? 'notes-list-single-' : 'notes-list-') + postId);
+            const countEl = document.getElementById((!isHomeView ? 'count-single-' : 'count-') + postId);
+
+            if (countEl) countEl.textContent = notes.length === 0 ? "henüz ses yok" : (notes.length + " cevap bulundu");
+            if (!listEl) return;
+
+            if (notes.length === 0) {
+                listEl.innerHTML = "";
+                return;
+            }
+
+            const display = isHomeView ? notes.slice(-2) : notes;
+
+            listEl.innerHTML = display.map(n => {
+                const canDel = canDeleteItem(n.ownerToken);
+                return `
+                <div class="wall-note-item">
+                    <div class="wall-note-meta">
+                        <span class="wall-note-author">${escapeHtml(n.author)}</span>
+                        <div>
+                            <span>${formatDepressiveTime(n.time)}</span>
+                            ${canDel ? `<button class="delete-btn" style="margin-left:8px;" onclick="deleteComment('${postId}', '${n.cid}',${isHomeView})">[ sil ]</button>` : ''}
+                        </div>
+                    </div>
+                    <div class="wall-note-text">${escapeHtml(n.text)}</div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function submitComment(postId, isHomeView) {
+            const prefix = isHomeView ? "" : "single-";
+            const nameIn = document.getElementById("name-" + prefix + postId);
+            const textIn = document.getElementById("text-" + prefix + postId);
+            if (!textIn || !textIn.value.trim()) return;
+
+            const existing = JSON.parse(localStorage.getItem("wall_comments_" + postId) || "[]");
+            existing.push({
+                cid: "c_" + Date.now() + "_" + Math.random().toString(36).substring(2, 5),
+                author: (nameIn && nameIn.value.trim()) ? nameIn.value.trim() : "bir yabancı",
+                text: textIn.value.trim(),
+                time: Date.now(),
+                ownerToken: CURRENT_VISITOR
+            });
+            localStorage.setItem("wall_comments_" + postId, JSON.stringify(existing));
+            textIn.value = "";
+            loadComments(postId, isHomeView);
+        }
+
+        function deleteComment(postId, commentId, isHomeView) {
+            const existing = JSON.parse(localStorage.getItem("wall_comments_" + postId) || "[]");
+            const target = existing.find(c => c.cid === commentId);
+            if (!target || !canDeleteItem(target.ownerToken)) return;
+
+            if (!confirm("Bu yorumu silmek istediğine emin misin?")) return;
+            const updated = existing.filter(c => c.cid !== commentId);
+            localStorage.setItem("wall_comments_" + postId, JSON.stringify(updated));
+            loadComments(postId, isHomeView);
+        }
+
+        updateAdminUI();
+        renderAll();
+    </script>
+</body>
+</html>
